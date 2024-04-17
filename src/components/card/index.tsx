@@ -41,7 +41,7 @@ interface CardContextType {
 const CardContext = createContext({} as CardContextType)
 
 export function Card({ children }: CardProps) {
-  const [amount, setAmount] = useState(3)
+  const [amount, setAmount] = useState(1)
 
   const handleDecreaseAmount = () => {
     if (amount > 1) setAmount((prev) => prev - 1)

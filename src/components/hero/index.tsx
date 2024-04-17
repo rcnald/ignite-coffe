@@ -42,7 +42,10 @@ export function Hero() {
           </Tag>
         </ul>
       </div>
-      <img src={heroImage} alt="" />
+      <img
+        src={heroImage}
+        alt="Copo de café em uma moldura, com vários grãos de café ao redor"
+      />
     </section>
   )
 }
