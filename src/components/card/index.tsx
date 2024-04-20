@@ -6,8 +6,12 @@ import {
   useContext,
   useState,
 } from 'react'
+import { CartContext } from '../../contexts/CartContext'
+import { centsToPrice } from '../../lib/utils'
 
-type CardProps = PropsWithChildren<ComponentProps<'article'>>
+interface CardProps extends PropsWithChildren {
+  id: number
+}
 
 interface CardImageProps extends ComponentProps<'img'> {
   src: string
@@ -29,18 +33,19 @@ interface CardDescriptionProps extends ComponentProps<'p'> {}
 interface CardDetailsProps extends PropsWithChildren<ComponentProps<'div'>> {}
 
 interface CardPriceProps extends ComponentProps<'span'> {
-  value: string
+  value: number
 }
 
 interface CardContextType {
+  id: number
+  amount: number
   handleDecreaseAmount: () => void
   handleIncreaseAmount: () => void
-  amount: number
 }
 
 const CardContext = createContext({} as CardContextType)
 
-export function Card({ children }: CardProps) {
+export function Card({ id, children }: CardProps) {
   const [amount, setAmount] = useState(1)
 
   const handleDecreaseAmount = () => {
@@ -53,7 +58,7 @@ export function Card({ children }: CardProps) {
 
   return (
     <CardContext.Provider
-      value={{ handleDecreaseAmount, handleIncreaseAmount, amount }}
+      value={{ handleDecreaseAmount, handleIncreaseAmount, amount, id }}
     >
       <article className="relative grid w-fit max-w-[256px] grid-rows-[20px_1fr] place-items-center gap-3 p-6 before:absolute before:-z-10 before:row-start-2 before:h-full before:w-full before:rounded-md before:rounded-bl-[36px] before:rounded-tr-[36px] before:bg-base-card before:content-['']">
         {children}
@@ -88,8 +93,8 @@ export function CardDescription({ children }: CardDescriptionProps) {
 
 export function CardPrice({ value }: CardPriceProps) {
   return (
-    <span className="self-center whitespace-nowrap font-baloo text-2xl font-extrabold before:font-roboto before:text-sm before:font-normal before:text-base-text before:content-['R$_']">
-      {value}
+    <span className="self-center whitespace-nowrap font-baloo text-2xl font-extrabold before:font-roboto before:text-sm before:font-normal before:text-base-text before:content-['R$']">
+      {centsToPrice(value)}
     </span>
   )
 }
@@ -99,9 +104,9 @@ export function CardDetails({ children }: CardDetailsProps) {
 }
 
 export function CardControls() {
-  const { handleIncreaseAmount, handleDecreaseAmount, amount } =
+  const { handleIncreaseAmount, handleDecreaseAmount, amount, id } =
     useContext(CardContext)
-
+  const { handleAddCoffeeToCart } = useContext(CartContext)
   return (
     <div className="flex items-center gap-2">
       <div className="grid grid-cols-3 place-items-center items-center rounded-md bg-base-button p-[8.5px]">
@@ -115,7 +120,10 @@ export function CardControls() {
           <Plus size={16} />
         </button>
       </div>
-      <button className="rounded-md bg-accent-dark p-2">
+      <button
+        className="rounded-md bg-accent-dark p-2"
+        onClick={() => handleAddCoffeeToCart(id, amount)}
+      >
         <ShoppingCart className="text-white" size={22} weight="fill" />
       </button>
     </div>

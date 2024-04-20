@@ -5,7 +5,7 @@ export const coffees = [
     title: 'Expresso Tradicional',
     description: 'O tradicional café feito com água quente e grãos moídos',
     tags: [{ id: 1, name: 'Tradicional' }],
-    price: '9,90',
+    price: 990,
   },
   {
     id: 2,
@@ -13,6 +13,6 @@ export const coffees = [
     title: 'Expresso Americano',
     description: 'Expresso diluído, menos intenso que o tradicional',
     tags: [{ id: 1, name: 'Tradicional' }],
-    price: '9,90',
+    price: 990,
   },
 ]
