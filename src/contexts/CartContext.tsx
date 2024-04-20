@@ -19,19 +19,19 @@ export const CartContext = createContext({} as CartContextType)
 
 export function CartContextProvider({ children }: CartContextProps) {
   const [cart, setCart] = useState<Array<CartItemData>>(() => {
-    const JSONAsString = localStorage.getItem('@ignite-coffee:cart-1.0.0')
+    const cartAsString = localStorage.getItem('@ignite-coffee:cart-1.0.0')
 
-    if (JSONAsString) return JSON.parse(JSONAsString)
+    if (cartAsString) return JSON.parse(cartAsString)
 
     return []
   })
 
   const handleAddCoffeeToCart = (id: number, amount: number) => {
-    const coffeeToAddAlreadyInCart = cart.find(
+    const coffeeToAddIsAlreadyInCart = cart.find(
       (coffee) => coffee.coffeeId === id,
     )
 
-    if (coffeeToAddAlreadyInCart) {
+    if (coffeeToAddIsAlreadyInCart) {
       setCart((prev) =>
         prev.map((coffee) => {
           if (coffee.coffeeId === id) {
