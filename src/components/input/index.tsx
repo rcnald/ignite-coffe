@@ -1,12 +1,16 @@
-import { ComponentProps, useId } from 'react'
+import React, { ComponentProps, useId } from 'react'
 import { cn } from '../../lib/utils'
 
 interface InputProps extends ComponentProps<'input'> {
   className?: string
+  optional?: boolean
   placeholder: string
 }
 
-export function Input({ placeholder, className, ...props }: InputProps) {
+export const Input = React.forwardRef<
+  HTMLInputElement,
+  React.HTMLAttributes<HTMLInputElement> & InputProps
+>(({ placeholder, optional, className, ...props }, ref) => {
   const id = useId()
   return (
     <label
@@ -18,15 +22,22 @@ export function Input({ placeholder, className, ...props }: InputProps) {
     >
       <span className="sr-only">{placeholder}</span>
       <input
-        className="peer w-full bg-transparent focus:outline-none"
+        className="w-full bg-transparent focus:outline-none"
         id={id}
         placeholder={placeholder}
         type="text"
+        ref={ref}
         {...props}
       />
-      <span className="text-xs italic text-base-label peer-required:hidden">
+      <span
+        className={cn('hidden text-xs italic text-base-label', {
+          inline: optional,
+        })}
+      >
         Opcional
       </span>
     </label>
   )
-}
+})
+
+Input.displayName = 'Input'

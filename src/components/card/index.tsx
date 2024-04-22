@@ -41,6 +41,7 @@ interface CardContextType {
   amount: number
   handleDecreaseAmount: () => void
   handleIncreaseAmount: () => void
+  resetAmount: () => void
 }
 
 const CardContext = createContext({} as CardContextType)
@@ -56,9 +57,19 @@ export function Card({ id, children }: CardProps) {
     setAmount((prev) => prev + 1)
   }
 
+  const resetAmount = () => {
+    setAmount(1)
+  }
+
   return (
     <CardContext.Provider
-      value={{ handleDecreaseAmount, handleIncreaseAmount, amount, id }}
+      value={{
+        handleDecreaseAmount,
+        handleIncreaseAmount,
+        resetAmount,
+        amount,
+        id,
+      }}
     >
       <article className="relative grid w-fit max-w-[256px] grid-rows-[20px_1fr] place-items-center gap-3 p-6 before:absolute before:-z-10 before:row-start-2 before:h-full before:w-full before:rounded-md before:rounded-bl-[36px] before:rounded-tr-[36px] before:bg-base-card before:content-['']">
         {children}
@@ -104,9 +115,20 @@ export function CardDetails({ children }: CardDetailsProps) {
 }
 
 export function CardControls() {
-  const { handleIncreaseAmount, handleDecreaseAmount, amount, id } =
-    useContext(CardContext)
+  const {
+    handleIncreaseAmount,
+    handleDecreaseAmount,
+    resetAmount,
+    amount,
+    id,
+  } = useContext(CardContext)
   const { handleAddCoffeeToCart } = useContext(CartContext)
+
+  const handleCartClick = (id: number, amount: number) => {
+    handleAddCoffeeToCart(id, amount)
+    resetAmount()
+  }
+
   return (
     <div className="flex items-center gap-2">
       <div className="grid grid-cols-3 place-items-center items-center rounded-md bg-base-button p-[8.5px]">
@@ -122,7 +144,7 @@ export function CardControls() {
       </div>
       <button
         className="rounded-md bg-accent-dark p-2"
-        onClick={() => handleAddCoffeeToCart(id, amount)}
+        onClick={() => handleCartClick(id, amount)}
       >
         <ShoppingCart className="text-white" size={22} weight="fill" />
       </button>

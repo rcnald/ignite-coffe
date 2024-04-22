@@ -1,5 +1,5 @@
 import { Minus, Plus, Trash } from 'phosphor-react'
-import { PropsWithChildren, useContext } from 'react'
+import { PropsWithChildren, createContext, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { CartContext } from '../../contexts/CartContext'
 import { coffees } from '../../lib/data'
@@ -13,7 +13,7 @@ interface CoffeeData {
   amount: number
 }
 
-interface CartSummaryProps {
+interface CartSummaryProps extends PropsWithChildren {
   className?: string
 }
 
@@ -22,9 +22,14 @@ interface CartItemProps {
   coffee: CoffeeData
 }
 
-type CartListProps = PropsWithChildren
+interface CartSummaryContextType {
+  cartCoffees: CoffeeData[]
+  totalCartCoffeesPrice: number
+}
 
-export function CartSummary({ className }: CartSummaryProps) {
+const CartSummaryContext = createContext({} as CartSummaryContextType)
+
+export function CartSummary({ className, children }: CartSummaryProps) {
   const { cart } = useContext(CartContext)
 
   const cartCoffees = cart.map((cartCoffee) => {
@@ -52,31 +57,31 @@ export function CartSummary({ className }: CartSummaryProps) {
         className,
       )}
     >
-      <CartList>
-        {cartCoffees.length ? (
-          cartCoffees.map((coffee) => {
-            return <CartItem key={coffee.id} id={coffee.id} coffee={coffee} />
-          })
-        ) : (
-          <li className="text-center font-bold text-base-text ">
-            <Link to={'/'} className="hover:underline">
-              Nenhum item no carrinho
-            </Link>
-          </li>
-        )}
-      </CartList>
-      <CartSummaryPrices totalCartCoffeesPrice={totalCartCoffeesPrice} />
-      <button className="rounded-md bg-brand-default p-3 font-bold uppercase leading-relaxed text-white">
-        confirmar pedido
-      </button>
+      <CartSummaryContext.Provider
+        value={{ cartCoffees, totalCartCoffeesPrice }}
+      >
+        {children}
+      </CartSummaryContext.Provider>
     </div>
   )
 }
 
-function CartList({ children }: CartListProps) {
+export function CartList() {
+  const { cartCoffees } = useContext(CartSummaryContext)
+
   return (
     <ul className="flex flex-col gap-6 *:border-b *:border-solid *:pb-6">
-      {children}
+      {cartCoffees.length ? (
+        cartCoffees.map((coffee) => {
+          return <CartItem key={coffee.id} id={coffee.id} coffee={coffee} />
+        })
+      ) : (
+        <li className="text-center font-bold text-base-text ">
+          <Link to={'/'} className="hover:underline">
+            Nenhum item no carrinho
+          </Link>
+        </li>
+      )}
     </ul>
   )
 }
@@ -126,11 +131,8 @@ function CartItem({ id, coffee }: CartItemProps) {
   )
 }
 
-function CartSummaryPrices({
-  totalCartCoffeesPrice,
-}: {
-  totalCartCoffeesPrice: number
-}) {
+export function CartSummaryPrices() {
+  const { totalCartCoffeesPrice } = useContext(CartSummaryContext)
   return (
     <table className="flex w-full flex-col gap-3  ">
       <tbody>

@@ -5,14 +5,10 @@ import {
   MapPinLine,
   Money,
 } from 'phosphor-react'
-import { ComponentProps, PropsWithChildren } from 'react'
-import { cn } from '../../lib/utils'
+import { useFormContext } from 'react-hook-form'
+import { OrderFormData } from '../../pages/cart'
 import { Input } from '../input'
 import { Select, SelectIcon } from '../select'
-
-interface OrderFormProps extends PropsWithChildren<ComponentProps<'form'>> {
-  className?: string
-}
 
 interface OrderFormHeaderProps {
   icon: { Element: React.ElementType; classNameColor: string }
@@ -20,9 +16,11 @@ interface OrderFormHeaderProps {
   description: string
 }
 
-export function OrderForm({ className }: OrderFormProps) {
+export function OrderForm() {
+  const { register } = useFormContext<OrderFormData>()
+
   return (
-    <form className={cn('flex flex-col gap-3', className)}>
+    <>
       <fieldset className="flex flex-col gap-8 rounded-md bg-base-card p-10 ">
         <OrderFormHeader
           icon={{
@@ -33,17 +31,38 @@ export function OrderForm({ className }: OrderFormProps) {
           description="Informe o endereço onde deseja receber seu pedido"
         />
         <div className="grid grid-cols-[200px_1fr_60px] gap-3">
-          <Input placeholder="CEP" required />
+          <Input placeholder="CEP" {...register('cep')} />
           <Input
             className="col-span-full row-start-2"
             placeholder="Rua"
-            required
+            {...register('street')}
           />
-          <Input className="row-start-3" placeholder="Número" required />
-          <Input className="col-span-2 row-start-3" placeholder="Complemento" />
-          <Input className="row-start-4" placeholder="Bairro" required />
-          <Input className="row-start-4" placeholder="Cidade" required />
-          <Input className="row-start-4" placeholder="UF" required />
+          <Input
+            className="row-start-3"
+            placeholder="Número"
+            {...register('number')}
+          />
+          <Input
+            className="col-span-2 row-start-3"
+            placeholder="Complemento"
+            optional
+            {...register('complement')}
+          />
+          <Input
+            className="row-start-4"
+            placeholder="Bairro"
+            {...register('neighborhood')}
+          />
+          <Input
+            className="row-start-4"
+            placeholder="Cidade"
+            {...register('city')}
+          />
+          <Input
+            className="row-start-4"
+            placeholder="UF"
+            {...register('state')}
+          />
         </div>
       </fieldset>
 
@@ -57,21 +76,21 @@ export function OrderForm({ className }: OrderFormProps) {
           description="O pagamento é feito na entrega. Escolha a forma que deseja pagar"
         />
         <div className="flex gap-3">
-          <Select name="d" value="credit">
+          <Select value="credit" {...register('paymentMethod')}>
             <SelectIcon icon={CreditCard} />
             Cartão de crédito
           </Select>
-          <Select name="d" value="debit">
+          <Select value="debit" {...register('paymentMethod')}>
             <SelectIcon icon={Bank} />
             cartão de débito
           </Select>
-          <Select name="d" value="cash">
+          <Select value="cash" {...register('paymentMethod')}>
             <SelectIcon icon={Money} />
             dinheiro
           </Select>
         </div>
       </fieldset>
-    </form>
+    </>
   )
 }
 
