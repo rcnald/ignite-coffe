@@ -15,9 +15,9 @@ export const Select = React.forwardRef<
 >(({ children, ...props }, ref) => {
   const id = useId()
   return (
-    <button>
+    <button className="flex-1">
       <label
-        className="flex flex-1 cursor-pointer items-center gap-3 whitespace-nowrap rounded-md border border-solid bg-base-button p-4 text-xs uppercase text-base-text hover:bg-base-hover hover:text-base-subtitle has-[:checked]:border-accent-default has-[:checked]:bg-accent-light has-[:checked]:text-base-text"
+        className="flex cursor-pointer items-center gap-3 whitespace-nowrap rounded-md border border-solid bg-base-button p-4 text-xs uppercase text-base-text hover:bg-base-hover hover:text-base-subtitle has-[:checked]:border-accent-default has-[:checked]:bg-accent-light has-[:checked]:text-base-text"
         htmlFor={id}
       >
         {children}

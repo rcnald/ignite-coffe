@@ -25,6 +25,7 @@ interface CartItemProps {
 interface CartSummaryContextType {
   cartCoffees: CoffeeData[]
   totalCartCoffeesPrice: number
+  shippingPrice: number
 }
 
 const CartSummaryContext = createContext({} as CartSummaryContextType)
@@ -46,6 +47,8 @@ export function CartSummary({ className, children }: CartSummaryProps) {
     return {} as CoffeeData
   })
 
+  const shippingPrice = 350
+
   const totalCartCoffeesPrice = cartCoffees.reduce((amount, coffee) => {
     return amount + coffee.price * coffee.amount
   }, 0)
@@ -58,7 +61,7 @@ export function CartSummary({ className, children }: CartSummaryProps) {
       )}
     >
       <CartSummaryContext.Provider
-        value={{ cartCoffees, totalCartCoffeesPrice }}
+        value={{ cartCoffees, totalCartCoffeesPrice, shippingPrice }}
       >
         {children}
       </CartSummaryContext.Provider>
@@ -87,11 +90,8 @@ export function CartList() {
 }
 
 function CartItem({ id, coffee }: CartItemProps) {
-  const {
-    handleRemoveCoffeeFromCart,
-    handleDecreaseCartCoffee,
-    handleIncreaseCartCoffee,
-  } = useContext(CartContext)
+  const { removeCoffeeFromCart, decreaseCartCoffee, increaseCartCoffee } =
+    useContext(CartContext)
   return (
     <li className="flex gap-5 border-b border-solid border-base-button">
       <img className="size-16" src={coffee.image} alt={coffee.name} />
@@ -101,7 +101,7 @@ function CartItem({ id, coffee }: CartItemProps) {
           <div className="grid h-fit shrink-0 grid-cols-3 place-items-center items-center rounded-md bg-base-button p-[5.5px]">
             <button
               className="text-accent-default"
-              onClick={() => handleDecreaseCartCoffee(id)}
+              onClick={() => decreaseCartCoffee(id)}
             >
               <Minus size={16} />
             </button>
@@ -110,14 +110,14 @@ function CartItem({ id, coffee }: CartItemProps) {
             </span>
             <button
               className="text-accent-default"
-              onClick={() => handleIncreaseCartCoffee(id)}
+              onClick={() => increaseCartCoffee(id)}
             >
               <Plus size={16} />
             </button>
           </div>
           <button
             className="flex h-fit items-center rounded-md bg-base-button p-2 text-xs uppercase text-base-text"
-            onClick={() => handleRemoveCoffeeFromCart(id)}
+            onClick={() => removeCoffeeFromCart(id)}
           >
             <Trash className="text-accent-default" size={16} />
             Remover
@@ -132,7 +132,11 @@ function CartItem({ id, coffee }: CartItemProps) {
 }
 
 export function CartSummaryPrices() {
-  const { totalCartCoffeesPrice } = useContext(CartSummaryContext)
+  const { totalCartCoffeesPrice, shippingPrice } =
+    useContext(CartSummaryContext)
+
+  const totalCart = totalCartCoffeesPrice + shippingPrice
+
   return (
     <table className="flex w-full flex-col gap-3  ">
       <tbody>
@@ -144,14 +148,14 @@ export function CartSummaryPrices() {
         </tr>
         <tr className="flex justify-between">
           <td className="text-sm text-base-text">Entrega</td>
-          <td className="text-base text-base-text before:content-['R$_']">
-            0,00
+          <td className="text-base text-base-text before:content-['R$']">
+            {centsToPrice(shippingPrice)}
           </td>
         </tr>
         <tr className="flex justify-between">
           <td className="text-xl font-bold text-base-text">Total</td>
           <td className="text-xl font-bold text-base-text before:content-['R$_']">
-            {centsToPrice(totalCartCoffeesPrice)}
+            {centsToPrice(totalCart)}
           </td>
         </tr>
       </tbody>

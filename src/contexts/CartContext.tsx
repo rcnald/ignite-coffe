@@ -1,16 +1,18 @@
-import { PropsWithChildren, createContext, useEffect, useState } from 'react'
-
-interface CartItemData {
-  coffeeId: number
-  amount: number
-}
+import { PropsWithChildren, createContext, useEffect, useReducer } from 'react'
+import {
+  addCoffeeToCartAction,
+  decreaseCartCoffeeAction,
+  increaseCartCoffeeAction,
+  removeCoffeeFromCartAction,
+} from '../reducers/cart/actions'
+import { CartItemData, cartReducer } from '../reducers/cart/reducer'
 
 interface CartContextType {
   cart: CartItemData[]
-  handleAddCoffeeToCart: (id: number, amount: number) => void
-  handleRemoveCoffeeFromCart: (id: number) => void
-  handleIncreaseCartCoffee: (id: number) => void
-  handleDecreaseCartCoffee: (id: number) => void
+  addCoffeeToCart: (id: number, amount: number) => void
+  removeCoffeeFromCart: (id: number) => void
+  increaseCartCoffee: (id: number) => void
+  decreaseCartCoffee: (id: number) => void
 }
 
 type CartContextProps = PropsWithChildren
@@ -18,58 +20,28 @@ type CartContextProps = PropsWithChildren
 export const CartContext = createContext({} as CartContextType)
 
 export function CartContextProvider({ children }: CartContextProps) {
-  const [cart, setCart] = useState<Array<CartItemData>>(() => {
+  const [cart, dispatch] = useReducer(cartReducer, [], (initialState) => {
     const cartAsString = localStorage.getItem('@ignite-coffee:cart-1.0.0')
 
     if (cartAsString) return JSON.parse(cartAsString)
 
-    return []
+    return initialState
   })
 
-  const handleAddCoffeeToCart = (id: number, amount: number) => {
-    const coffeeToAddIsAlreadyInCart = cart.find(
-      (coffee) => coffee.coffeeId === id,
-    )
-
-    if (coffeeToAddIsAlreadyInCart) {
-      setCart((prev) =>
-        prev.map((coffee) => {
-          if (coffee.coffeeId === id) {
-            return { ...coffee, amount: coffee.amount + amount }
-          }
-          return coffee
-        }),
-      )
-    } else {
-      setCart((prev) => [...prev, { coffeeId: id, amount }])
-    }
+  const addCoffeeToCart = (id: number, amount: number) => {
+    dispatch(addCoffeeToCartAction(id, amount))
   }
 
-  const handleRemoveCoffeeFromCart = (id: number) => {
-    setCart((prev) => prev.filter((coffee) => coffee.coffeeId !== id))
+  const removeCoffeeFromCart = (id: number) => {
+    dispatch(removeCoffeeFromCartAction(id))
   }
 
-  const handleIncreaseCartCoffee = (id: number) => {
-    setCart((prev) =>
-      prev.map((coffee) => {
-        if (coffee.coffeeId === id) {
-          return { ...coffee, amount: coffee.amount + 1 }
-        }
-        return coffee
-      }),
-    )
+  const increaseCartCoffee = (id: number) => {
+    dispatch(increaseCartCoffeeAction(id))
   }
 
-  const handleDecreaseCartCoffee = (id: number) => {
-    setCart((prev) =>
-      prev.map((coffee) => {
-        if (coffee.coffeeId === id) {
-          const updatedAmount = coffee.amount - 1 < 1 ? 1 : coffee.amount - 1
-          return { ...coffee, amount: updatedAmount }
-        }
-        return coffee
-      }),
-    )
+  const decreaseCartCoffee = (id: number) => {
+    dispatch(decreaseCartCoffeeAction(id))
   }
 
   useEffect(() => {
@@ -80,10 +52,10 @@ export function CartContextProvider({ children }: CartContextProps) {
     <CartContext.Provider
       value={{
         cart,
-        handleAddCoffeeToCart,
-        handleRemoveCoffeeFromCart,
-        handleDecreaseCartCoffee,
-        handleIncreaseCartCoffee,
+        addCoffeeToCart,
+        removeCoffeeFromCart,
+        decreaseCartCoffee,
+        increaseCartCoffee,
       }}
     >
       {children}

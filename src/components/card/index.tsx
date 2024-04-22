@@ -122,10 +122,10 @@ export function CardControls() {
     amount,
     id,
   } = useContext(CardContext)
-  const { handleAddCoffeeToCart } = useContext(CartContext)
+  const { addCoffeeToCart } = useContext(CartContext)
 
   const handleCartClick = (id: number, amount: number) => {
-    handleAddCoffeeToCart(id, amount)
+    addCoffeeToCart(id, amount)
     resetAmount()
   }
 
