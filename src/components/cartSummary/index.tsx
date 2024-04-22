@@ -22,6 +22,10 @@ interface CartItemProps {
   coffee: CoffeeData
 }
 
+interface CartSummarySubmitProps {
+  form: string
+}
+
 interface CartSummaryContextType {
   cartCoffees: CoffeeData[]
   totalCartCoffeesPrice: number
@@ -69,14 +73,16 @@ export function CartSummary({ className, children }: CartSummaryProps) {
   )
 }
 
-export function CartList() {
+export function CartSummaryList() {
   const { cartCoffees } = useContext(CartSummaryContext)
 
   return (
     <ul className="flex flex-col gap-6 *:border-b *:border-solid *:pb-6">
       {cartCoffees.length ? (
         cartCoffees.map((coffee) => {
-          return <CartItem key={coffee.id} id={coffee.id} coffee={coffee} />
+          return (
+            <CartSummaryItem key={coffee.id} id={coffee.id} coffee={coffee} />
+          )
         })
       ) : (
         <li className="text-center font-bold text-base-text ">
@@ -89,7 +95,7 @@ export function CartList() {
   )
 }
 
-function CartItem({ id, coffee }: CartItemProps) {
+function CartSummaryItem({ id, coffee }: CartItemProps) {
   const { removeCoffeeFromCart, decreaseCartCoffee, increaseCartCoffee } =
     useContext(CartContext)
   return (
@@ -160,5 +166,24 @@ export function CartSummaryPrices() {
         </tr>
       </tbody>
     </table>
+  )
+}
+
+export function CartSummarySubmit({ form }: CartSummarySubmitProps) {
+  const { cart } = useContext(CartContext)
+
+  const cartHasItems = !!cart.length
+
+  return (
+    <button
+      className="rounded-md bg-brand-default p-3 font-bold uppercase leading-relaxed text-white transition-all disabled:bg-brand-dark disabled:text-base-hover"
+      form={form}
+      title={
+        cartHasItems ? 'Finalizar' : 'Tenha pelo menos um item no carrinho'
+      }
+      disabled={!cartHasItems}
+    >
+      confirmar pedido
+    </button>
   )
 }

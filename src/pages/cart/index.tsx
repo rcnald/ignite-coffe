@@ -2,12 +2,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import {
-  CartList,
   CartSummary,
+  CartSummaryList,
   CartSummaryPrices,
+  CartSummarySubmit,
 } from '../../components/cartSummary'
 import { OrderForm } from '../../components/orderForm'
-import { CartContextProvider } from '../../contexts/CartContext'
 
 const OrderFormValidationSchema = z.object({
   cep: z.string().regex(/^\d{5}-\d{3}$/, 'Informe um CEP em formato valido'),
@@ -64,18 +64,11 @@ export function Cart() {
         <h1 className="font-baloo text-lg font-bold text-base-subtitle">
           Cafés selecionados
         </h1>
-        <CartContextProvider>
-          <CartSummary>
-            <CartList />
-            <CartSummaryPrices />
-            <button
-              className="rounded-md bg-brand-default p-3 font-bold uppercase leading-relaxed text-white"
-              form="orderForm"
-            >
-              confirmar pedido
-            </button>
-          </CartSummary>
-        </CartContextProvider>
+        <CartSummary>
+          <CartSummaryList />
+          <CartSummaryPrices />
+          <CartSummarySubmit form="orderForm" />
+        </CartSummary>
       </section>
     </div>
   )
