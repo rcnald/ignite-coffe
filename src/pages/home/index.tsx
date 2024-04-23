@@ -16,7 +16,7 @@ export function Home() {
   return (
     <div>
       <Hero />
-      <section className="font-roboto">
+      <main className="font-roboto">
         <h1 className="font-baloo text-[2rem] font-extrabold">Nossos cafés</h1>
         <div className="grid grid-cols-[repeat(auto-fit,minmax(256px,0fr))] gap-x-8 gap-y-5">
           {coffees.map((coffee) => {
@@ -38,7 +38,7 @@ export function Home() {
             )
           })}
         </div>
-      </section>
+      </main>
     </div>
   )
 }

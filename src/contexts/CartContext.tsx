@@ -1,52 +1,83 @@
 import { PropsWithChildren, createContext, useEffect, useReducer } from 'react'
 import {
   addCoffeeToCartAction,
+  createNewOrderAction,
   decreaseCartCoffeeAction,
   increaseCartCoffeeAction,
   removeCoffeeFromCartAction,
+  resetCartAction,
 } from '../reducers/cart/actions'
-import { CartItemData, cartReducer } from '../reducers/cart/reducer'
+import {
+  CartCoffeeAddFunction,
+  CartCoffeeFunction,
+  CartItemData,
+  OrderData,
+  OrderFunction,
+  cartReducer,
+} from '../reducers/cart/reducer'
 
 interface CartContextType {
   cart: CartItemData[]
-  addCoffeeToCart: (id: number, amount: number) => void
-  removeCoffeeFromCart: (id: number) => void
-  increaseCartCoffee: (id: number) => void
-  decreaseCartCoffee: (id: number) => void
+  orders: OrderData[]
+  addCoffeeToCart: CartCoffeeAddFunction
+  removeCoffeeFromCart: CartCoffeeFunction
+  increaseCartCoffee: CartCoffeeFunction
+  decreaseCartCoffee: CartCoffeeFunction
+  createNewOrder: OrderFunction
+  resetCart: () => void
 }
-
-type CartContextProps = PropsWithChildren
 
 export const CartContext = createContext({} as CartContextType)
 
-export function CartContextProvider({ children }: CartContextProps) {
-  const [cart, dispatch] = useReducer(cartReducer, [], (initialState) => {
-    const cartAsString = localStorage.getItem('@ignite-coffee:cart-1.0.0')
+export function CartContextProvider({ children }: PropsWithChildren) {
+  const [cartState, dispatch] = useReducer(
+    cartReducer,
+    { cart: [], orders: [] },
+    (initialState) => {
+      const cartAsString = localStorage.getItem(
+        '@ignite-coffee:cartState-1.0.0',
+      )
 
-    if (cartAsString) return JSON.parse(cartAsString)
+      if (cartAsString) {
+        return JSON.parse(cartAsString)
+      }
 
-    return initialState
-  })
+      return initialState
+    },
+  )
 
-  const addCoffeeToCart = (id: number, amount: number) => {
+  const { cart, orders } = cartState
+
+  const addCoffeeToCart: CartCoffeeAddFunction = (id, amount) => {
     dispatch(addCoffeeToCartAction(id, amount))
   }
 
-  const removeCoffeeFromCart = (id: number) => {
+  const removeCoffeeFromCart: CartCoffeeFunction = (id) => {
     dispatch(removeCoffeeFromCartAction(id))
   }
 
-  const increaseCartCoffee = (id: number) => {
+  const increaseCartCoffee: CartCoffeeFunction = (id) => {
     dispatch(increaseCartCoffeeAction(id))
   }
 
-  const decreaseCartCoffee = (id: number) => {
+  const decreaseCartCoffee: CartCoffeeFunction = (id) => {
     dispatch(decreaseCartCoffeeAction(id))
   }
 
+  const createNewOrder: OrderFunction = (shoppingInfo, coffees, callback) => {
+    dispatch(createNewOrderAction(shoppingInfo, coffees, callback))
+  }
+
+  const resetCart = () => {
+    dispatch(resetCartAction())
+  }
+
   useEffect(() => {
-    localStorage.setItem('@ignite-coffee:cart-1.0.0', JSON.stringify(cart))
-  }, [cart])
+    localStorage.setItem(
+      '@ignite-coffee:cartState-1.0.0',
+      JSON.stringify(cartState),
+    )
+  }, [cartState])
 
   return (
     <CartContext.Provider
@@ -56,6 +87,9 @@ export function CartContextProvider({ children }: CartContextProps) {
         removeCoffeeFromCart,
         decreaseCartCoffee,
         increaseCartCoffee,
+        createNewOrder,
+        resetCart,
+        orders,
       }}
     >
       {children}

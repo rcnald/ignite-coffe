@@ -1,5 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useContext } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import {
   CartSummary,
@@ -8,12 +10,13 @@ import {
   CartSummarySubmit,
 } from '../../components/cartSummary'
 import { OrderForm } from '../../components/orderForm'
+import { CartContext } from '../../contexts/CartContext'
 
 const OrderFormValidationSchema = z.object({
   cep: z.string().regex(/^\d{5}-\d{3}$/, 'Informe um CEP em formato valido'),
   street: z.string().min(1, 'Informe a rua'),
   number: z.string().min(1, 'Informe um número'),
-  complement: z.string(),
+  complement: z.string().optional(),
   neighborhood: z.string().min(1, 'Informe um bairro'),
   city: z.string().min(1, 'Informe uma cidade'),
   state: z.string().min(2, 'Informe uma cidade').max(2),
@@ -37,9 +40,12 @@ export function Cart() {
       street: '',
     },
   })
+  const navigate = useNavigate()
+  const { createNewOrder, resetCart, cart } = useContext(CartContext)
 
-  const handleOrderSubmit = (data: unknown) => {
-    console.log(data)
+  const handleOrderSubmit = (data: OrderFormData) => {
+    createNewOrder(data, cart, navigate)
+    resetCart()
   }
 
   const { handleSubmit } = orderForm
@@ -60,7 +66,7 @@ export function Cart() {
           </FormProvider>
         </form>
       </section>
-      <section className="flex w-full max-w-[448px] flex-col gap-4">
+      <main className="flex w-full max-w-[448px] flex-col gap-4">
         <h1 className="font-baloo text-lg font-bold text-base-subtitle">
           Cafés selecionados
         </h1>
@@ -69,7 +75,7 @@ export function Cart() {
           <CartSummaryPrices />
           <CartSummarySubmit form="orderForm" />
         </CartSummary>
-      </section>
+      </main>
     </div>
   )
 }

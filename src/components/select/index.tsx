@@ -15,7 +15,7 @@ export const Select = React.forwardRef<
 >(({ children, ...props }, ref) => {
   const id = useId()
   return (
-    <button className="flex-1">
+    <button className="flex-1" type="button">
       <label
         className="flex cursor-pointer items-center gap-3 whitespace-nowrap rounded-md border border-solid bg-base-button p-4 text-xs uppercase text-base-text hover:bg-base-hover hover:text-base-subtitle has-[:checked]:border-accent-default has-[:checked]:bg-accent-light has-[:checked]:text-base-text"
         htmlFor={id}
