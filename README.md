@@ -1,30 +1,50 @@
-# React + TypeScript + Vite
+# Ignite - Coffee Delivery
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+O Projeto foi criado usando conceitos mais avançados do React, tais como reducers, contextAPI também como as bibliotecas, React Hook Form e Zod como base.
 
-Currently, two official plugins are available:
+Coffee Delivery um e-commerce de cafés, onde apresenta-se diversos tipos de café, após a adicionar os cafés ao carrinho, ao finalizar a compra são exigidas informações de entrega e pagamento. 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Funcionalidades
 
-## Expanding the ESLint configuration
+- **Manipulação do carrinho:** Entre outras coisas, adicionar ao carrinho, remover, alterar quantidade.
+- **Finalização do pedido:** Preenchimento dos dados de entrega, criar pedido com items selecionados.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Pré-requisitos
 
-- Configure the top-level `parserOptions` property like this:
+Antes de começar, certifique-se de ter o [Node.js](https://nodejs.org/) instalado em seu sistema.
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+## Como Usar
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+1. **Clone este repositório:**
+   ```bash
+   git clone https://github.com/rcnald/ignite-coffee.git
+   # or
+   gh repo clone rcnald/ignite-coffee
+   ```
+2. **Entrar no diretório**
+    ```bash
+    cd ignite-coffee
+    ```
+  
+3. **Instalar suas dependências**
+   
+    ```
+    npm install
+    ```
+
+4. **Iniciar o projeto**
+    ```
+    npm run dev
+    ```
+    Logo após isso o projeto será iniciado na porta [http://localhost:5173](http://localhost:5173) se disponível.
+
+## Tecnologias usadas
+Tecnologias e bibliotecas utilizadas para a construção do projeto. 
+- [react](https://react.dev/)
+- [react-router-dom](https://reactrouter.com/en/main)
+- [react-hook-form](https://react-hook-form.com/)
+- [zod](https://zod.dev/)
+- [typescript](https://www.typescriptlang.org/)
+- [phosphor-icons](https://phosphoricons.com)
+- [tailwind](https://tailwindcss.com/)
+- [vite](https://vitejs.dev)
